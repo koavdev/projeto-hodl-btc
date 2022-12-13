@@ -1,0 +1,275 @@
+{% extends 'layout.html' %}
+
+{% block title %} Transações - HODL BTC {% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+  {% for row in transactions %}
+    {% if not row %}
+      <h2>Você não possui nenhuma transação cadastrada.</h2>
+  
+    {% endif %}
+  {% endfor %}
+  <!--- Div Botão Modal Nova Transação -->
+  <div style="margin-top:30px;margin-bottom:30px;text-align:center;">   
+    <button type="button" class="btn btn-primary mx-5" data-bs-toggle="modal" data-bs-target="#modalCadastrar">
+    Cadastrar nova transação
+    </button>
+  </div>
+  <!--- Fecha Div Botão Modal Nova Transação -->
+
+  <!-- Modal Nova Transação-->
+  <div class="modal fade" id="modalCadastrar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content bg-dark text-white">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Nova transação</h1>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="{{url_for('transactions')}}" method='POST'>
+            <div class="form-group">
+              <label>Data da transação</label>
+              <input type="date" class="form-control" name="data" required>
+            </div>
+            <div class="form-group mt-2">
+              <label>Tipo</label><br>
+              <input name="tipo" type="radio" value="Compra"> Compra
+              <input name="tipo" type="radio" value="Venda"> Venda
+            </div>
+            <div class="form-group mt-2">
+              <label>Valor (BRL)</label>
+              <input type="text" class="form-control" name="valor_brl" placeholder="Ex.: 50">
+            </div>
+            <div class="form-group mt-2">
+              <label>Valor (USD)</label>
+              <input type="text" class="form-control" name="valor_usd" placeholder="Ex.: 50">
+            </div>
+            <div class="form-group mt-2">
+              <label>Quantidade</label>
+              <input type="text" class="form-control" name="quantidade" placeholder="Ex.: 0.000123">
+            </div>
+            <div class="form-group mt-2">
+              <label>Preço (BRL)</label>
+              <input type="text" class="form-control" name="preco_brl" placeholder="Ex.: 50">
+            </div>
+            <div class="form-group mt-2">
+              <label>Preço (USD)</label>
+              <input type="text" class="form-control" name="preco_usd" placeholder="Ex.: 50">
+            </div>
+            <div class="form-group mt-2">
+              <label>Carteira/Corretora</label>
+              <input type="text" class="form-control" name="wallet" required placeholder="Ex.: Binance, Ledger">
+            </div>
+            <div class="form-group">
+              <button class="btn btn-primary mt-3" type="submit">Enviar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div><!--- Fecha Modal Nova Transação -->
+
+  <!--- Div Tabela Todas Transações --> 
+  <div>        
+    <h2>Minhas transações</h2>
+    <table class="table table-striped table-dark table-hover">
+      <tr class="bg-warning">
+          <th>ID</th>
+          <th>Data da transação</th>
+          <th>Tipo</th>
+          <th>Valor (BRL)</th>
+          <th>Valor (USD)</th>
+          <th>Quantidade</th>
+          <th>Preço (BRL)</th>
+          <th>Preço (USD)</th>
+          <th>Carteira/Corretora</th>
+          <th></th>
+      </tr>
+
+      <!--- Laço de repetição para mostrar as transações -->
+      {% for row in transactions %}
+
+      <tr>
+          <td>{{row[0]}}</td> <!--- ID Transação -->
+          <td>{{row[1].strftime('%d/%m/%Y')}}</td> <!--- Data da transação -->
+          <td>{{row[2]}}</td> <!--- Tipo -->
+          <td>{{row[3]}}</td> <!--- Valor BRL-->
+          <td>{{row[4]}}</td> <!--- Valor USD -->
+          <td>{{row[5]}}</td> <!--- Quantidade -->
+          <td>{{row[6]}}</td> <!--- Preco BRL-->
+          <td>{{row[7]}}</td> <!--- Preco USD-->
+          <td>{{row[8]}}</td> <!--- Local que está guardado-->
+          <td>
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalEdit{{row[0]}}">Editar</button>                
+            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDelete{{row[0]}}">Apagar</button>
+          </td>
+      </tr>          
+        
+      <!--- Modal Editar -->
+      <div class="modal fade" id="modalEdit{{row[0]}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content bg-dark text-white">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Transação ID #{{row[0]}}</h1>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form action="{{url_for('update')}}" method='POST'>
+                <div class="form-group">
+                  <label>Data da transação</label>
+                  <input type="hidden" name="id_transacao" value="{{ row[0] }}">
+                  <input type="date" class="form-control" name="data" value="{{ row[1] }}" required>
+                </div>
+                <div class="form-group mt-2">
+                  <label>Tipo</label><br>
+                  <input name="tipo" type="radio" value="Compra" {% if row[2] == 'Compra' %} checked {% endif %}> Compra
+                  <input name="tipo" type="radio" value="Venda" {% if row[2] == 'Venda' %} checked {% endif %}> Venda
+                </div>
+                <div class="form-group mt-2">
+                  <label>Valor (BRL)</label>
+                  <input type="text" class="form-control" name="valor_brl"  value="{{ row[3] }}">
+                </div>
+                <div class="form-group mt-2">
+                  <label>Valor (USD)</label>
+                  <input type="text" class="form-control" name="valor_usd"  value="{{ row[4] }}">
+                </div>
+                <div class="form-group mt-2">
+                  <label>Quantidade</label>
+                  <input type="text" class="form-control" name="quantidade"  value="{{ row[5] }}">
+                </div>
+                <div class="form-group mt-2">
+                  <label>Preço (BRL)</label>
+                  <input type="text" class="form-control" name="preco_brl"  value="{{ row[6] }}">
+                </div>
+                <div class="form-group mt-2">
+                  <label>Preço (USD)</label>
+                  <input type="text" class="form-control" name="preco_usd"  value="{{ row[7] }}">
+                </div>
+                <div class="form-group mt-2">
+                  <label>Carteira/Corretora</label>
+                  <input type="text" class="form-control" name="wallet"  value="{{ row[8] }}">
+                </div>
+                <div class="form-group">
+                  <button class="btn btn-primary mt-3" type="submit">Salvar</button>
+                </div>
+              </form>
+            </div>
+            
+          </div>
+        </div>
+      </div> <!--- Fecha Modal Editar -->
+
+      <!--- Modal Apagar -->
+      <div class="modal fade" id="modalDelete{{row[0]}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content bg-dark text-white">
+            <div class="modal-header">
+              <h2 class="modal-title fs-5" id="exampleModalLabel">Transação ID #{{row[0]}}</h2>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>Você deseja realmente apagar essa transação?</p>
+              <a href="/delete/{{ row[0] }}" class="btn btn-danger btn-xs">Sim, apagar agora</a>                  
+            </div>              
+          </div>
+        </div>
+      </div><!--- Fecha Modal Apagar -->
+      
+      {% endfor %}
+
+    </table>
+  </div><!--- Fecha Div Tabela Todas Transações -->
+
+  <!--- Div Tabela Transações Compra-->
+  <div style="border-radius: 1rem;margin-top:50px;">        
+    <h2>Compras</h2>
+    <table class="table table-striped table-dark table-hover"> <!-- Tabela Transações Compra -->
+      <tr>
+          <th>ID</th>
+          <th>Data da transação</th>
+          <th>Tipo</th>
+          <th>Valor (BRL)</th>
+          <th>Valor (USD)</th>
+          <th>Quantidade</th>
+          <th>Preço (BRL)</th>
+          <th>Preço (USD)</th>
+          <th>Carteira/Corretora</th>
+          <th></th>
+      </tr>
+
+      <!--- Laço de repetição para mostrar as Transações Compra -->
+      {% for row in transactions %}
+        {% if row[2] == 'Compra' %}
+
+      <tr>
+          <td>{{row[0]}}</td> <!--- ID Transação -->
+          <td>{{row[1].strftime('%d/%m/%Y')}}</td> <!--- Data da transação -->
+          <td>{{row[2]}}</td> <!--- Tipo -->
+          <td>{{row[3]}}</td> <!--- Valor BRL-->
+          <td>{{row[4]}}</td> <!--- Valor USD -->
+          <td>{{row[5]}}</td> <!--- Quantidade -->
+          <td>{{row[6]}}</td> <!-- Preco BRL-->
+          <td>{{row[7]}}</td> <!-- Preco USD-->
+          <td>{{row[8]}}</td> <!--- Local que está guardado-->
+          <td>
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalEdit{{row[0]}}">Editar</button>                
+            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDelete{{row[0]}}">Apagar</button>
+          </td>
+      </tr>
+
+      
+
+        {% endif %}
+      {% endfor %}
+
+    </table><!--- Fecha Tabela Transações Compra -->
+  </div><!--- Fecha Div Transações Compra -->
+      
+  <!--- Div Tabela Transações Venda-->
+  <div style="border-radius: 1rem;margin-top:50px;">        
+    <h2>Vendas</h2>
+    
+    <table class="table table-striped table-dark table-hover"> <!-- Tabela Transações Venda -->
+        <tr>
+            <th>ID</th>
+            <th>Data da transação</th>
+            <th>Tipo</th>
+            <th>Valor (BRL)</th>
+            <th>Valor (USD)</th>
+            <th>Quantidade</th>
+            <th>Preço (BRL)</th>
+            <th>Preço (USD)</th>
+            <th>Carteira/Corretora</th>
+            <th></th>
+        </tr>
+
+        <!--- Laço de repetição para mostrar as Transações Venda -->
+        {% for row in transactions %}
+          {% if row[2] == 'Venda' %}
+        <tr>
+            <td>{{row[0]}}</td> <!--- ID Transação -->
+            <td>{{row[1].strftime('%d/%m/%Y')}}</td> <!--- Data da transação -->
+            <td>{{row[2]}}</td> <!--- Tipo -->
+            <td>{{row[3]}}</td> <!--- Valor BRL-->
+            <td>{{row[4]}}</td> <!--- Valor USD -->
+            <td>{{row[5]}}</td> <!--- Quantidade -->
+            <td>{{row[6]}}</td> <!-- Preco BRL-->
+            <td>{{row[7]}}</td> <!-- Preco USD-->
+            <td>{{row[8]}}</td> <!--- Local que está guardado-->
+            <td>
+              <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalEdit{{row[0]}}">Editar</button>                
+              <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDelete{{row[0]}}">Apagar</button>
+            </td>
+        </tr>
+
+        
+        {% endif %}
+      {% endfor %}
+
+    </table><!--- Fecha Tabela Transações Venda -->
+  </div><!--- Fecha Div Transações Venda -->
+</div>
+
+{% endblock %}

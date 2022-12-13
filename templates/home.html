@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+
+{% block title %} Home {% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <div>
+    <img style="display:block" class="mx-auto" src="/static/images/logo.png" height="400"/>
+  </div>
+  <div class="text-white py-5" style="background-color:orange">
+    <div class="row my-5 mx-5">
+      <div class="col-sm">
+        <div class="container px-5 text-center">
+          <h2 class="fw-bold text-black">1. Envie as transações</h2>
+          <h6>Cadastre as suas transações de Bitcoin. <br>Escolha a moeda de sua preferência (BRL ou USD). </h6>
+        </div>
+      </div>
+      <div class="col-sm">
+        <div class="container px-5 text-center">
+          <h2 class="fw-bold text-black">2. Acesse o Dashboard</h2>
+          <h6>Visualize gráficos da sua carteira. <br> Acompanhe os indicadores do Bitcoin.</h6>
+          
+        </div>
+       </div>
+    </div>
+    <div class="row mx-5">
+      <div class="col-sm" style="text-align:center;">
+        <a class="btn btn-primary btn-lg px-4" href="/transactions">Começar</a>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+
+
+
+{% endblock %}

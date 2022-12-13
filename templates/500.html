@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+
+{% block title %} Erro 500 - HODL BTC {% endblock %}
+
+{% block content %}
+
+<section class="vh-100 gradient-custom">
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+          <div class="card text-white" style="border-radius: 1rem;background-color:red">
+            <div class="card-body p-5 text-center">
+  
+                
+                {% if request.method == 'GET' %}
+                <h2 class="fw-bold mb-2 text-uppercase">ERRO - Código 500</h2>
+                <p class="fw-bold text-black">Você não tem acesso a essa página. <br> Crie uma conta ou faça o login.</p>
+                
+                {% else %}
+                <h2 class="fw-bold mb-2 text-uppercase">ERRO - Código 500</h2>
+                <p class="fw-bold text-black">E-mail já está vinculado a uma conta. <br> Tente novamente.</p>
+
+                {% endif %}
+  
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+{% endblock %}

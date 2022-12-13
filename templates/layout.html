@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>    
+    <meta charset="utf-8">
+    <title>{% block title %} {% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" media="screen" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">  
+    <link href="/static/favicon.ico" rel="icon" type="image/x-icon" /> 
+  </head>
+  <body>
+    
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fw-bold">
+        <div class="container">   
+            <div class="collapse navbar-collapse" id="navbarButtonsExample">
+                
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    {% if session['email'] %}  
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/home">Home</a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="/transactions">Transações</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">Dashboard</a>
+                    </li>        
+                </ul>
+        
+                <div class="d-flex aligns-items-end">            
+                    <a class="btn btn-secondary me-3" disabled> 
+                        Logado em: {{email}}
+                    </a>
+                    <a href="/logout" type="button" class="btn btn-danger">
+                        Deslogar
+                    </a>
+                    {% else %}
+                    
+                    <a class="btn btn-secondary me-3" type="button" href="/login"> 
+                        Entrar
+                    </a>
+                    <a class="btn btn-primary" type="button" href="/register">
+                        Criar uma conta
+                    </a>  
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    
+    {% block content %}
+    {% endblock %}
+    
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
+
+
